@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\seanm\repos\OPENGl\glad\include;C:\Users\seanm\repos\OPENGl\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\include;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\seanm\source\repos\Toy_Renderer\Toy_Renderer\glm-master;C:\Users\seanm\repos\OPENGl\glad\include;C:\Users\seanm\repos\OPENGl\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\seanm\repos\OPENGl\glfw-3.3.8.bin.WIN64\glfw-3.3.8.bin.WIN64\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -134,13 +134,19 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\repos\OPENGl\glad\src\glad.c" />
     <ClCompile Include="main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Shader.h" />
+    <ClCompile Include="stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentShader.glsl" />
     <None Include="vertexShader.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\awesomeface.png" />
+    <Image Include="textures\container.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
