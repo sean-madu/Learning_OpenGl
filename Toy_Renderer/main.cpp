@@ -12,6 +12,11 @@
 #define GLM_SWIZZLE
 
 
+glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
+float deltaTime = 0.0f;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
@@ -21,6 +26,16 @@ void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+
+    const float camSpeed = deltaTime * 2.5f;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        camPos += camSpeed * camFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        camPos -= camSpeed * camFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        camPos -= glm::normalize(glm::cross(camFront, camUp)) * camSpeed; //Adjust the position to the right (cross of front and up) 
+    if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        camPos += glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
 }
 
 
@@ -55,7 +70,6 @@ int main()
 
 
     Shader shader("vertexShader.glsl", "fragmentShader.glsl");
-
     float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
          0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
@@ -196,8 +210,13 @@ int main()
     glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
+
+    float lastTime = 0.0f;
     while (!glfwWindowShouldClose(window))
     {
+        float time = glfwGetTime();
+        deltaTime = time - lastTime;
+        lastTime = time;
         // input
         // -----
         processInput(window);
@@ -229,11 +248,9 @@ int main()
         
 
 
-        const float radius = 10.0f;
-        float camX = sin(glfwGetTime()) * radius;
-        float camZ = cos(glfwGetTime()) * radius;
+
         glm::mat4 view;
-        view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));
+        view = glm::lookAt(camPos, camPos + camFront, camUp);
 
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -261,9 +278,6 @@ int main()
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
-
-
- 
 
 
 
