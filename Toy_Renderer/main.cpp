@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "Shader.h"
+#include "Camera.h"
 #include "stb_image.h"
 
 #include <glm/glm.hpp>
@@ -12,9 +13,9 @@
 #define GLM_SWIZZLE
 
 
-glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+Camera camera = Camera(glm::vec3(0.0, 0.0, 0.3));
+
 float deltaTime = 0.0f;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -27,15 +28,15 @@ void processInput(GLFWwindow* window)
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    const float camSpeed = deltaTime * 2.5f;
+
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camPos += camSpeed * camFront;
+        camera.processKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camPos -= camSpeed * camFront;
+        camera.processKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camPos -= glm::normalize(glm::cross(camFront, camUp)) * camSpeed; //Adjust the position to the right (cross of front and up) 
+        camera.processKeyboard(LEFT, deltaTime);
     if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camPos += glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
+        camera.processKeyboard(RIGHT, deltaTime);
 }
 
 
@@ -237,20 +238,10 @@ int main()
         shader.use();
 
 
-        /*
-        //Transform things
-        glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        */
-
         //Co-ordinate matrices
-        
-
-
 
         glm::mat4 view;
-        view = glm::lookAt(camPos, camPos + camFront, camUp);
+        view = glm::lookAt(camera.position, camera.position + camera.front, camera.up);
 
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
